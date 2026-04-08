@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Voice Assistant</title>
+</head>
+<body style="text-align:center; font-family:sans-serif;">
+
+<h1>Voice Assistant for Blind</h1>
+
+<h2>Select Language</h2>
+
+<button onclick="setLang('en-IN')">English</button>
+<button onclick="setLang('hi-IN')">Hindi</button>
+<button onclick="setLang('te-IN')">Telugu</button>
+
+<h3>OR Speak your language 🎤</h3>
+<button onclick="startListening()">Start Voice</button>
+
+<script>
+let selectedLang = "en-IN";
+
+function setLang(lang) {
+    selectedLang = lang;
+    localStorage.setItem("lang", lang);
+    window.location.href = "/detect";
+}
+
+function startListening() {
+    const recognition = new webkitSpeechRecognition();
+    recognition.lang = "en-IN";
+
+    recognition.onresult = function(event) {
+        let speech = event.results[0][0].transcript.toLowerCase();
+
+        if (speech.includes("telugu")) selectedLang = "te-IN";
+        else if (speech.includes("hindi")) selectedLang = "hi-IN";
+        else selectedLang = "en-IN";
+
+        localStorage.setItem("lang", selectedLang);
+        window.location.href = "/detect";
+    };
+
+    recognition.start();
+}
+</script>
+
+</body>
+</html>

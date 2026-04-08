@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Detection</title>
+</head>
+<body style="text-align:center;">
+
+<h1>Live Detection</h1>
+
+<video id="video" width="600" autoplay></video>
+<canvas id="canvas" width="600" height="400"></canvas>
+
+<script>
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+let lastSpoken = "";
+
+navigator.mediaDevices.getUserMedia({ video: true })
+.then(stream => {
+    video.srcObject = stream;
+});
+
+setInterval(async () => {
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const image = canvas.toDataURL('image/jpeg');
+
+    const res = await fetch('/predict', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image })
+    });
+
+    const data = await res.json();
+
+    // Draw boxes
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    data.forEach(obj => {
+        ctx.strokeRect(obj.xmin, obj.ymin, obj.xmax - obj.xmin, obj.ymax - obj.ymin);
+        ctx.fillText(obj.label, obj.xmin, obj.ymin - 5);
+    });
+
+    // Speak only new object
+    if (data.length > 0 && data[0].sentence !== lastSpoken) {
+        speak(data[0].sentence);
+        lastSpoken = data[0].sentence;
+    }
+
+}, 2500);
+
+
+// 🔊 SPEECH
+function speak(text) {
+    const lang = localStorage.getItem("lang") || "en-IN";
+    const speech = new SpeechSynthesisUtterance(text);
+    speech.lang = lang;
+    window.speechSynthesis.speak(speech);
+}
+</script>
+
+</body>
+</html>
