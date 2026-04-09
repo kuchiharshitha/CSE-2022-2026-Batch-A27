@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 from flask import Flask, render_template, request, jsonify
 import torch
 import base64
@@ -118,5 +118,4 @@ def predict():
     return jsonify(output)
 
 if __name__ == "__main__":
->>>>>>> c711bb4 (initial commit)
     app.run(host="0.0.0.0", port=10000)
