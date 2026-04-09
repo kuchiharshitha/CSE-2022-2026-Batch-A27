@@ -1,16 +1,7 @@
-<<<<<<< HEAD
 flask
 torch
 torchvision
 torchaudio
 pandas
 numpy
-=======
-flask
-torch
-torchvision
-torchaudio
-pandas
-numpy
->>>>>>> c711bb4 (initial commit)
 opencv-python-headless
