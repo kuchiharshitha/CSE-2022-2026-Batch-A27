@@ -7,7 +7,7 @@ import cv2
 app = Flask(__name__)
 
 # Load YOLO model
-model = torch.hub.load('ultralytics/yolov5', 'yolov5s')
+model = torch.hub.load('ultralytics/yolov5', 'yolov5s', trust_repo=True)
 
 @app.route('/')
 def index():
